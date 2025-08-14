@@ -1,0 +1,42 @@
+---
+title: "toolik_chem"
+format: html
+editor: visual
+---
+
+## Day 3 Activity 
+
+```{r}
+# load the libraries
+library(tidyverse)
+library(janitor)
+library(here)
+
+#download data 
+toolik_biochem <- read.csv(here::here("data", "2011_kling_Akchem.csv"), na = c(".", "NA")) %>% clean_names()
+
+#subset the data for 1 site 
+inlet_biochem <- subset(toolik_biochem, site == "Toolik Inlet")
+biochem_data <- dplyr::select(inlet_biochem, p_h, doc_u_m, tdn_u_m)
+
+
+# find the mean 3 ways 
+# 1 way 
+mean1 <- apply(X = biochem_data, MARGIN = 2, FUN = mean, na.rm = TRUE)
+mean1
+
+# 2 way 
+mean2 <- biochem_data %>%  
+  summarise(across(where(is.numeric), mean, na.rm = TRUE))
+mean2
+
+# 3 way 
+mean3 <- vector(mode = "numeric", length = ncol(biochem_data)) #storing output 
+
+for(i in seq_along(biochem_data)) {
+  mean3 [i]<- mean(biochem_data[[i]], na.rm = TRUE)
+}
+mean3
+
+```
+
